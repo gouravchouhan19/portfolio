@@ -1,0 +1,235 @@
+/* ==========================================================
+   1. TOKENS
+   ========================================================== */
+:root{
+  --bg:#0A0A0C;
+  --bg-2:#141416;
+  --text:#F3EBDD;
+  --text-2:#A8A094;
+  --accent:#D4A24C;
+  --crimson:#C8433A;
+  --line:rgba(243,235,221,.14);
+  --serif:"Cormorant Garamond","Times New Roman",serif;
+  --sans:"DM Sans",system-ui,sans-serif;
+  --pad:clamp(1.25rem,5vw,5rem);
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+
+/* ==========================================================
+   2. BASE
+   ========================================================== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:5rem}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:300;line-height:1.7;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+em{color:var(--accent);font-style:italic}
+section,footer{position:relative;padding:clamp(3.5rem,7vw,5.5rem) var(--pad)}
+.eyebrow{font-size:.72rem;letter-spacing:.32em;text-transform:uppercase;color:var(--crimson)}
+h1,h2,h3{font-family:var(--serif);font-weight:300;line-height:1.02;letter-spacing:-.01em}
+h2{font-size:clamp(2.6rem,7vw,6.5rem);text-transform:uppercase;max-width:14ch}
+
+/* Film grain: tiny SVG noise, shifted in steps (cheap, no JS) */
+body::after{
+  content:"";position:fixed;inset:-50%;z-index:100;pointer-events:none;opacity:.09;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grain .9s steps(6) infinite;
+}
+@keyframes grain{
+  0%{transform:translate(0,0)}20%{transform:translate(-4%,3%)}40%{transform:translate(3%,-5%)}
+  60%{transform:translate(-5%,-2%)}80%{transform:translate(4%,4%)}100%{transform:translate(0,0)}
+}
+
+/* Scroll reveal (only where the browser supports scroll-driven animations) */
+@supports (animation-timeline:view()){
+  .reveal{animation:rise linear both;animation-timeline:view();animation-range:entry 0% entry 60%}
+}
+@keyframes rise{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+
+/* ==========================================================
+   3. NAVIGATION
+   ========================================================== */
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1.4rem var(--pad);background:linear-gradient(var(--bg),transparent)}
+.logo{font-family:var(--serif);font-size:1.15rem;font-weight:500;letter-spacing:.2em;white-space:nowrap}
+.nav ul{display:flex;gap:clamp(1rem,3vw,2.6rem);list-style:none}
+.nav ul a{position:relative;font-size:.72rem;letter-spacing:.25em;color:var(--text-2);padding:.3rem 0;transition:color .3s}
+.nav ul a::after{content:"";position:absolute;left:0;bottom:0;height:1px;width:100%;background:var(--accent);transform:scaleX(0);transform-origin:right;transition:transform .5s var(--ease)}
+.nav ul a:hover{color:var(--text)}
+.nav ul a:hover::after{transform:scaleX(1);transform-origin:left}
+
+/* ==========================================================
+   4. HERO
+   ========================================================== */
+.hero{min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;padding-top:8rem;padding-bottom:5rem;overflow:hidden;
+  background:
+    radial-gradient(60% 55% at 78% 30%,rgba(212,162,76,.28),transparent 70%),
+    radial-gradient(45% 45% at 15% 85%,rgba(200,67,58,.18),transparent 70%),
+    var(--bg)}
+/* abstract light shapes */
+.orb{position:absolute;border-radius:50%;pointer-events:none}
+.orb.a{width:min(46vw,640px);aspect-ratio:1;right:-8vw;top:8vh;border:1px solid rgba(212,162,76,.35);animation:drift 22s ease-in-out infinite alternate}
+.orb.b{width:min(30vw,420px);aspect-ratio:1;right:6vw;top:22vh;background:radial-gradient(circle at 35% 30%,rgba(212,162,76,.5),rgba(212,162,76,0) 65%);filter:blur(8px);animation:drift 16s ease-in-out infinite alternate-reverse}
+.bar{position:absolute;top:0;bottom:0;right:28%;width:1px;background:linear-gradient(transparent,var(--line),transparent)}
+@keyframes drift{to{transform:translate(-3vw,4vh) scale(1.06)}}
+/* cinematic letterbox bars */
+.hero::before,.hero::after{content:"";position:absolute;left:0;right:0;height:clamp(14px,3vh,34px);background:#050506;z-index:2}
+.hero::before{top:0}.hero::after{bottom:0}
+
+.hero .inner{position:relative;z-index:3}
+.hero h1{font-size:clamp(2.9rem,9.2vw,9rem);text-transform:uppercase;margin:1.2rem 0 2rem;font-weight:300}
+.hero h1 span{display:block;overflow:hidden}
+.hero h1 span>i{display:block;font-style:normal;animation:reveal 1.2s var(--ease) both}
+.hero h1 span:nth-child(2)>i{animation-delay:.2s}
+@keyframes reveal{from{transform:translateY(105%)}to{transform:none}}
+.hero p.intro{max-width:46ch;color:var(--text-2);font-size:1.05rem;animation:fade 1.4s .7s both}
+.hero .eyebrow{animation:fade 1.2s .1s both}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.btns{display:flex;flex-wrap:wrap;gap:1rem;margin-top:2.4rem;animation:fade 1.4s .9s both}
+.btn{font-size:.72rem;letter-spacing:.25em;padding:1.1rem 2rem;border:1px solid var(--accent);transition:background .4s,color .4s,border-color .4s,transform .4s var(--ease)}
+.btn.fill{background:var(--accent);color:var(--bg)}
+.btn.fill:hover{background:transparent;color:var(--accent)}
+.btn.ghost{border-color:var(--line);color:var(--text)}
+.btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn:hover{transform:translateY(-3px)}
+
+.scroll{position:absolute;right:var(--pad);bottom:4.5rem;z-index:3;display:flex;flex-direction:column;align-items:center;gap:.8rem;font-size:.62rem;letter-spacing:.3em;color:var(--text-2);writing-mode:vertical-rl}
+.scroll::after{content:"";width:1px;height:70px;background:linear-gradient(var(--accent),transparent);animation:line 2.2s ease-in-out infinite;transform-origin:top}
+@keyframes line{0%{transform:scaleY(0)}50%{transform:scaleY(1)}100%{transform:scaleY(1);opacity:0}}
+
+/* ==========================================================
+   5. ABOUT
+   ========================================================== */
+.about{background:var(--bg-2);display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(2rem,7vw,7rem);align-items:end}
+.about h2{margin-top:1.2rem}
+.about .text p{color:var(--text-2);margin-bottom:1.3rem;max-width:52ch}
+.about .text p:first-of-type{font-family:var(--serif);font-size:clamp(1.5rem,2.4vw,2.1rem);line-height:1.3;color:var(--text)}
+
+/* ==========================================================
+   6. WHAT I DO
+   ========================================================== */
+.what .list{margin-top:2.5rem;border-top:1px solid var(--line)}
+.row{display:grid;grid-template-columns:5rem 1fr 1.1fr;gap:1.5rem;align-items:baseline;padding:2.2rem 0;border-bottom:1px solid var(--line);position:relative;transition:padding .5s var(--ease)}
+.row::before{content:"";position:absolute;left:0;bottom:-1px;height:1px;width:100%;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .7s var(--ease)}
+.row:hover{padding-left:1.2rem}
+.row:hover::before{transform:scaleX(1)}
+.row .n{font-family:var(--serif);color:var(--accent);font-size:1.3rem}
+.row h3{font-size:clamp(1.7rem,3.4vw,3rem);text-transform:uppercase}
+.row p{color:var(--text-2);max-width:40ch}
+/* staggered, asymmetrical offsets */
+.row:nth-child(even){margin-left:clamp(0rem,8vw,8rem)}
+
+/* ==========================================================
+   8. SKILLS
+   ========================================================== */
+.skills>ul{list-style:none;margin-top:2.5rem}
+.skills>ul>li{font-family:var(--serif);font-size:clamp(2rem,6vw,5.2rem);line-height:1.15;text-transform:uppercase;color:rgba(243,235,221,.28);transition:color .5s,transform .6s var(--ease);width:fit-content;cursor:default;display:flex;align-items:center;gap:1.2rem}
+.skills>ul>li::after{content:"";height:1px;width:0;background:var(--accent);transition:width .7s var(--ease)}
+.skills>ul>li:hover{color:var(--text);transform:translateX(1.2rem)}
+.skills>ul>li:hover::after{width:clamp(2rem,10vw,8rem)}
+.skills>ul>li:nth-child(even){margin-left:clamp(0rem,12vw,12rem)}
+
+/* ==========================================================
+   9. EDUCATION
+   ========================================================== */
+.edu{background:var(--bg-2)}
+.timeline{margin-top:2.5rem;display:grid;grid-template-columns:minmax(10rem,18rem) 1fr;gap:clamp(1.5rem,5vw,5rem);border-left:1px solid var(--accent);padding-left:clamp(1.2rem,4vw,3rem);position:relative}
+.timeline::before{content:"";position:absolute;left:-5px;top:.7rem;width:9px;height:9px;border-radius:50%;background:var(--accent)}
+.timeline .yr{font-family:var(--serif);font-size:1.6rem;color:var(--accent)}
+.timeline h3{font-size:clamp(1.8rem,3.5vw,3rem)}
+.timeline .where{color:var(--crimson);margin:.5rem 0 1.2rem}
+.timeline p{color:var(--text-2);max-width:52ch}
+
+/* ==========================================================
+   10. CONTACT
+   ========================================================== */
+.contact{min-height:90svh;display:flex;flex-direction:column;justify-content:center;overflow:hidden;
+  background:radial-gradient(55% 60% at 85% 100%,rgba(212,162,76,.3),transparent 70%),var(--bg)}
+.contact h2{max-width:none;font-size:clamp(2.8rem,9vw,9rem);margin:1.2rem 0 2rem}
+.contact h2 em{display:block}
+.contact .lead{color:var(--text-2);max-width:44ch;font-size:1.1rem}
+.links{margin-top:4rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:2rem;border-top:1px solid var(--line);padding-top:2rem}
+.links a{display:block;transition:transform .5s var(--ease)}
+.links a:hover{transform:translateY(-4px)}
+.links small{display:block;font-size:.66rem;letter-spacing:.3em;color:var(--crimson);margin-bottom:.4rem}
+.links span{font-family:var(--serif);font-size:clamp(1.3rem,2.2vw,1.9rem);word-break:break-word;background:linear-gradient(var(--accent),var(--accent)) 0 100%/0 1px no-repeat;transition:background-size .6s var(--ease)}
+.links a:hover span{background-size:100% 1px}
+
+/* ==========================================================
+   11. FOOTER
+   ========================================================== */
+footer{padding-top:2.5rem;padding-bottom:2.5rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem;border-top:1px solid var(--line);font-size:.68rem;letter-spacing:.25em;color:var(--text-2)}
+
+/* ==========================================================
+   12. RESPONSIVE + ACCESSIBILITY
+   ========================================================== */
+@media (max-width:900px){
+  .about{grid-template-columns:1fr}
+  .row{grid-template-columns:3rem 1fr}
+  .row p{grid-column:2}
+  .row:nth-child(even),.skills>ul>li:nth-child(even){margin-left:0}
+  .timeline{grid-template-columns:1fr;gap:.5rem}
+  .scroll{display:none}
+}
+@media (max-width:600px){
+  .nav{flex-direction:column;align-items:flex-start;gap:.6rem;padding-top:1.1rem}
+  .nav ul{gap:1.1rem}
+  .hero{padding-top:9rem}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+
+/* ==========================================================
+   13. JS-DRIVEN STATES (script.js)
+   ========================================================== */
+.nav{transition:background .4s,padding .4s}
+.nav.scrolled{background:rgba(10,10,12,.92);padding-top:.9rem;padding-bottom:.9rem;backdrop-filter:blur(6px)}
+.nav ul a.active{color:var(--text)}
+.nav ul a.active::after{transform:scaleX(1);transform-origin:left}
+/* Fallback reveal for browsers without scroll-driven animations */
+.js-reveal .reveal{opacity:0;transform:translateY(40px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.js-reveal .reveal.in{opacity:1;transform:none}
+
+/* ==========================================================
+   14. STUDIO (startup details, clients, packages)
+   ========================================================== */
+.studio-top{margin-top:2.5rem;display:grid;grid-template-columns:1.2fr 1fr;gap:clamp(2rem,6vw,6rem);align-items:center}
+.logo-frame{position:relative;aspect-ratio:16/10;overflow:hidden;border:1px solid var(--line);background:var(--bg-2)}
+.logo-frame .ph{position:absolute;inset:0;background:radial-gradient(circle at 70% 35%,rgba(212,162,76,.55),transparent 55%),linear-gradient(140deg,#1C1A19,#0A0A0C)}
+.logo-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:10%}
+.studio-text h3{font-size:clamp(2rem,4vw,3.4rem);text-transform:uppercase}
+.studio-text p{color:var(--text-2);max-width:42ch;margin-top:1rem}
+.stat{display:flex;align-items:baseline;gap:1rem;margin-top:2.2rem;padding-top:1.5rem;border-top:1px solid var(--line)}
+.stat strong{font-family:var(--serif);font-weight:300;font-size:clamp(4rem,9vw,7.5rem);line-height:1;color:var(--accent)}
+.stat span{font-size:.72rem;letter-spacing:.3em;color:var(--text-2)}
+.packages{margin-top:3rem;display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line)}
+.pkg{padding:2.4rem clamp(1rem,2.5vw,2.4rem) 2.4rem 0;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:.9rem;transition:background .5s}
+.pkg+.pkg{padding-left:clamp(1rem,2.5vw,2.4rem)}
+.pkg:last-child{border-right:0}
+.pkg h3{font-size:clamp(1.8rem,3vw,2.6rem);text-transform:uppercase}
+.pkg.featured h3{color:var(--accent)}
+.pkg .price{font-size:.72rem;letter-spacing:.25em;text-transform:uppercase;color:var(--crimson)}
+.pkg p{color:var(--text-2)}
+.pkg-links{margin-top:auto;display:flex;flex-wrap:wrap;gap:1.6rem}
+.pkg a{font-size:.72rem;letter-spacing:.25em;padding-bottom:.3rem;border-bottom:1px solid var(--accent);transition:color .3s,letter-spacing .4s var(--ease)}
+.pkg a:hover{color:var(--accent);letter-spacing:.35em}
+@media (max-width:900px){
+  .studio-top{grid-template-columns:1fr}
+  .packages{grid-template-columns:1fr}
+  .pkg,.pkg+.pkg{padding:2rem 0;border-right:0;border-bottom:1px solid var(--line)}
+}
+
+/* ==========================================================
+   15. TOOLS (software list inside Skills)
+   ========================================================== */
+.tools{margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--line)}
+.tools ul{list-style:none;display:flex;flex-wrap:wrap;margin-top:1.4rem}
+.tools li{font-family:var(--serif);font-size:clamp(1.4rem,2.6vw,2.2rem);color:var(--text);padding:.2rem 1.6rem;border-left:1px solid var(--line);transition:color .4s}
+.tools li:first-child{padding-left:0;border-left:0}
+.tools li:hover{color:var(--accent)}
+@media (max-width:600px){.tools li{width:100%;padding-left:0;border-left:0;border-bottom:1px solid var(--line)}}
+
+/* ==========================================================
+   16. SKILLS BACKGROUND: generic video-editing timeline image
+   ========================================================== */
+.skills{background:linear-gradient(180deg,rgba(10,10,12,.94) 0%,rgba(10,10,12,.82) 45%,rgba(10,10,12,.95) 100%),url("images/editing-bg.svg") center/cover no-repeat}
